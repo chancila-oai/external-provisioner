@@ -1388,11 +1388,6 @@ func (r *rateLimitingQueue) Add(item QueueKey) {
 		return
 	}
 	for _, existing := range r.items {
-		if existing.item != nil && item.item != nil {
-			if *existing.item == *item.item {
-				return
-			}
-		}
 		if existing.capacity != nil && item.capacity != nil {
 			if existing.capacity.UID == item.capacity.UID {
 				return
@@ -1993,7 +1988,7 @@ func itemsAsSortedStringSlice(queue *rateLimitingQueue) []string {
 	var content []string
 	for _, item := range queue.allItems() {
 		switch {
-		case item.item != nil:
+		case item.item != (WorkItem{}):
 			content = append(content, fmt.Sprintf("%s, %v", item.item.storageClassName, *item.item.segment))
 		case item.capacity != nil:
 			content = append(content, fmt.Sprintf("csc for %s, %v", item.capacity.StorageClassName, item.capacity.NodeTopology))
